@@ -1,6 +1,6 @@
 # Özçam Pide
 
-Tanıtım sitesi + menü yönetim paneli. Next.js 16, Prisma 7, SQLite, Tailwind CSS.
+Tanıtım sitesi + menü yönetim paneli. Next.js 16, Prisma 7, Postgres (Neon), Vercel Blob, Tailwind CSS. Vercel'de yayında (Frankfurt bölgesi).
 
 Tasarım: Cormorant Garamond (başlıklar) + Inter (metin). Yazı ölçeği (`title-hero`, `title-section`, `title-card`, `lead` vb.) ve renkler `src/app/globals.css` içinde tanımlı.
 
@@ -10,22 +10,28 @@ Node.js 20.9 veya üstü gerekir.
 
 ```bash
 npm install          # Prisma client da otomatik üretilir
-npm run db:migrate   # veritabanını oluşturur (prisma/dev.db)
-npm run db:seed      # örnek menüyü ekler
+vercel link          # Vercel projesine bağlar (ozcam-pide)
+vercel env pull      # Neon ve Blob bağlantılarını .env.local'e indirir
 npm run dev
 ```
+
+> Yerelde de yayındaki Neon veritabanı ve Blob kullanılır: panelde yapılan değişiklikler canlı siteye yansır.
+
+Veritabanı şeması değişince `npm run db:migrate` ile yeni migration oluşturulur; Vercel her deploy'da `prisma migrate deploy` çalıştırır (`vercel-build`).
 
 - Site: http://localhost:3000
 - Menü: http://localhost:3000/menu
 - Yönetim paneli: http://localhost:3000/admin (şifre `.env` içindeki `ADMIN_PASSWORD`)
 
-## Ortam değişkenleri (`.env`)
+## Ortam değişkenleri
 
-| Değişken         | Açıklama                                   |
-| ---------------- | ------------------------------------------ |
-| `DATABASE_URL`   | SQLite dosya yolu (`file:./prisma/dev.db`) |
-| `ADMIN_PASSWORD` | `/admin` giriş şifresi                     |
-| `SESSION_SECRET` | Oturum çerezini imzalayan gizli anahtar    |
+| Değişken                | Nerede                     | Açıklama                                     |
+| ----------------------- | -------------------------- | -------------------------------------------- |
+| `DATABASE_URL`          | Vercel → `.env.local`      | Neon bağlantısı (havuzlu)                    |
+| `DATABASE_URL_UNPOOLED` | Vercel → `.env.local`      | Neon doğrudan bağlantı (migration'lar için)  |
+| `BLOB_READ_WRITE_TOKEN` | Vercel → `.env.local`      | Fotoğraf yükleme                             |
+| `ADMIN_PASSWORD`        | Vercel + yerelde `.env`    | `/admin` giriş şifresi                       |
+| `SESSION_SECRET`        | Vercel + yerelde `.env`    | Oturum çerezini imzalayan gizli anahtar      |
 
 ## Yapı
 
@@ -51,8 +57,9 @@ Veritabanını tarayıcıda görmek için: `npm run db:studio`
 
 Admin panelinde her kategori ve ürünün solundaki kutuya tıklayıp fotoğraf seçilir. Fotoğraf tarayıcıda en fazla 1600 px'e küçültülüp WebP'ye çevrilir (telefon fotoğrafı ~3 MB → ~200 KB), sonra **Kaydet** ile yüklenir. Fotoğraf değiştirilince ya da ürün silinince eski dosya da silinir.
 
-- **Yerelde:** dosyalar proje kökündeki `uploads/` klasörüne kaydedilir (git'e eklenmez).
-- **Vercel'de:** sunucu diski kalıcı olmadığı için Vercel Blob kullanılır. Vercel projesinde *Storage → Blob → Create* ile **public** bir store oluşturup projeye bağlamak yeterli; `BLOB_READ_WRITE_TOKEN` (veya `BLOB_STORE_ID`) tanımlı olduğunda kod otomatik olarak Blob'a yükler.
+- Fotoğraflar `ozcam-pide-gorseller` adlı public Vercel Blob store'una yüklenir (`BLOB_READ_WRITE_TOKEN` tanımlıyken; yerelde de).
+- Blob fotoğrafları `next/image` ile küçültülüp Vercel önbelleğinden sunulur (`next.config.ts` → `images.remotePatterns`), Blob'un aylık indirme kotası korunur.
+- Token yoksa dosyalar proje kökündeki `uploads/` klasörüne kaydedilir (git'e eklenmez).
 
 ## Görseller
 

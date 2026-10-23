@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { isUnoptimized } from "@/lib/image-url";
 import { useEffect, useRef, useState } from "react";
 import { Photo } from "@/components/photo";
 
@@ -83,7 +84,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
                 alt={current.caption ?? ""}
                 fill
                 sizes="100vw"
-                unoptimized={current.imageUrl.startsWith("http")}
+                unoptimized={isUnoptimized(current.imageUrl)}
                 className="object-contain"
               />
             </figure>

@@ -1,5 +1,8 @@
-import "dotenv/config";
+import { config } from "dotenv";
 import { defineConfig } from "prisma/config";
+
+// Vercel'den çekilen .env.local önce gelir
+config({ path: [".env.local", ".env"], quiet: true });
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -8,6 +11,7 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // Migration'lar Neon'un havuzsuz (doğrudan) bağlantısıyla çalışmalı
+    url: process.env["DATABASE_URL_UNPOOLED"] ?? process.env["DATABASE_URL"],
   },
 });

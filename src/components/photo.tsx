@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { isUnoptimized } from "@/lib/image-url";
 
 /**
- * Yerel (/images/...) görselleri optimize eder; adminden girilen dış adresleri olduğu gibi gösterir.
+ * Yerel ve Blob görsellerini optimize eder; adminden girilen dış adresleri olduğu gibi gösterir.
  * Fotoğraf yüklenince bulanıktan nete yumuşakça belirir (globals.css: .photo).
  */
 export function Photo({
@@ -40,7 +41,7 @@ export function Photo({
         fill
         sizes={sizes}
         priority={priority}
-        unoptimized={src.startsWith("http")}
+        unoptimized={isUnoptimized(src)}
         onLoad={() => setLoaded(true)}
         className={`object-cover ${className ?? ""}`}
       />
