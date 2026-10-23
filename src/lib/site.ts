@@ -10,8 +10,6 @@ export const site = {
   // Haritada gösterilecek yer; API anahtarı gerekmez. Şimdilik semt merkezi gösteriliyor —
   // işletme Google Maps'te çıkınca "q=" kısmına adını ya da tam adresini yaz (z = yakınlık).
   mapsEmbedUrl: "https://www.google.com/maps?q=Kadıköy,+İstanbul&z=15&output=embed",
-  // Google işletme profilindeki yorumlar sayfası
-  reviewsUrl: "https://maps.google.com/?q=Özçam+Pide",
   social: {
     instagram: "https://instagram.com/",
     facebook: "https://facebook.com/",

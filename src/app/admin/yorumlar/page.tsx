@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ConfirmButton } from "@/components/confirm-button";
 import { requireAdmin } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { createReview, deleteReview, updateReview } from "../actions";
 import { AdminShell } from "../admin-shell";
 import { dangerButton, input, label, primaryButton } from "../styles";
+import { AdminForm, DeleteButton } from "../toast";
 
 export const metadata: Metadata = {
   title: "Yorumlar | Yönetim Paneli",
@@ -47,7 +47,7 @@ async function ReviewsPanel() {
         yoksa anasayfada yerine ustanın sözü gösterilir.
       </p>
 
-      <form action={createReview} className="mt-10 grid gap-4 bg-white p-5 shadow-sm md:grid-cols-[1fr_140px]">
+      <AdminForm action={createReview} successMessage="Eklendi" className="mt-10 grid gap-4 bg-white p-5 shadow-sm md:grid-cols-[1fr_140px]">
         <div>
           <label className={label} htmlFor="new-author">
             Yorum sahibi
@@ -69,12 +69,12 @@ async function ReviewsPanel() {
             Yorum Ekle
           </button>
         </div>
-      </form>
+      </AdminForm>
 
       <ul className="mt-10 space-y-4">
         {reviews.map((review) => (
           <li key={review.id} className={`bg-white shadow-sm ${review.isVisible ? "" : "opacity-60"}`}>
-            <form action={updateReview} className="grid gap-4 p-5 md:grid-cols-[1fr_140px_70px_auto] md:items-end">
+            <AdminForm action={updateReview} className="grid gap-4 p-5 md:grid-cols-[1fr_140px_70px_auto] md:items-end">
               <input type="hidden" name="id" value={review.id} />
               <div>
                 <label className={label}>Yorum sahibi</label>
@@ -105,7 +105,7 @@ async function ReviewsPanel() {
                 <button type="submit" className={primaryButton}>
                   Kaydet
                 </button>
-                <ConfirmButton
+                <DeleteButton
                   formAction={deleteReview}
                   formNoValidate
                   title="Yorum silinsin mi?"
@@ -113,9 +113,9 @@ async function ReviewsPanel() {
                   className={dangerButton}
                 >
                   Sil
-                </ConfirmButton>
+                </DeleteButton>
               </div>
-            </form>
+            </AdminForm>
           </li>
         ))}
       </ul>

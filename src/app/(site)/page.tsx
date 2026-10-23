@@ -240,7 +240,7 @@ async function Featured() {
 }
 
 const quoteBandClass =
-  "relative flex min-h-[70vh] items-center justify-center bg-ink-deep bg-cover bg-center px-6 md:bg-fixed";
+  "relative flex items-center justify-center bg-ink-deep bg-cover bg-center px-6 md:bg-fixed";
 
 /** Müşteri yorumları; panelde yorum yoksa yerine ustanın sözü görünür. */
 async function Reviews() {
@@ -248,7 +248,10 @@ async function Reviews() {
 
   if (reviews.length === 0) {
     return (
-      <section className={quoteBandClass} style={{ backgroundImage: "url(/images/bant-firin.jpg)" }}>
+      <section
+        className={`${quoteBandClass} min-h-[70vh]`}
+        style={{ backgroundImage: "url(/images/bant-firin.jpg)" }}
+      >
         <div className="absolute inset-0 bg-black/55" />
         <div className="reveal relative max-w-3xl text-center text-white">
           <p className="eyebrow justify-center text-peach">Usta işi</p>
@@ -265,19 +268,19 @@ async function Reviews() {
   return (
     <section
       id="yorumlar"
-      className={`band-scroll ${quoteBandClass} py-24 lg:py-32`}
+      className={`band-scroll ${quoteBandClass} py-12 lg:py-16`}
       style={{ backgroundImage: "url(/images/bant-firin.jpg)" }}
     >
       <div className="absolute inset-0 bg-black/65" />
       <div className="relative w-full max-w-6xl text-white">
         <p className="eyebrow reveal justify-center text-peach">Misafirlerimiz ne diyor?</p>
-        <h2 className="title-section reveal-title mt-5 text-center">
+        <h2 className="title-section reveal-title mt-3 text-center">
           Sofradan <em>Kalanlar</em>
         </h2>
 
         {/* Yorum çoksa yana kaydırılır */}
         <ul
-          className={`-mx-6 mt-14 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 [scrollbar-width:thin] lg:gap-6 ${
+          className={`-mx-6 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 [scrollbar-width:thin] lg:gap-5 ${
             reviews.length < 3 ? "sm:justify-center" : ""
           }`}
         >
@@ -285,29 +288,18 @@ async function Reviews() {
             <li
               key={review.id}
               style={{ "--i": Math.min(index, 3) } as React.CSSProperties}
-              className="band-item flex shrink-0 basis-[85%] snap-center flex-col bg-white/[0.07] p-8 backdrop-blur-sm sm:basis-[calc(50%-10px)] lg:basis-[calc((100%-48px)/3)]"
+              className="band-item flex shrink-0 basis-[85%] snap-center flex-col bg-white/[0.07] p-6 backdrop-blur-sm sm:basis-[calc(50%-8px)] lg:basis-[calc((100%-40px)/3)]"
             >
               <Stars rating={review.rating} />
-              <blockquote className="lead mt-5 flex-1">
+              <blockquote className="mt-3 flex-1 text-base leading-[1.5]">
                 “{review.text}”
               </blockquote>
-              <p className="label-strong mt-6 text-sand">
+              <p className="mt-4 text-sm font-semibold text-sand">
                 {review.author}
               </p>
             </li>
           ))}
         </ul>
-
-        <p className="reveal mt-10 text-center">
-          <a
-            href={site.reviewsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-outline"
-          >
-            Tüm yorumlar Google&apos;da
-          </a>
-        </p>
       </div>
     </section>
   );

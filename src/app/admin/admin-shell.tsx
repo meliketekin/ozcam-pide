@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/logo";
 import { logout } from "./actions";
+import { ToastProvider } from "./toast";
 
 const tabs = [
   { href: "/admin", label: "Menü" },
@@ -61,7 +62,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </nav>
       </header>
 
-      <div className="mx-auto max-w-6xl px-6 py-12">{children}</div>
+      <ToastProvider>
+        <div className="mx-auto max-w-6xl px-6 py-12">{children}</div>
+      </ToastProvider>
     </div>
   );
 }

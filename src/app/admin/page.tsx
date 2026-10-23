@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ConfirmButton } from "@/components/confirm-button";
 import { ImageField } from "@/components/image-field";
 import { requireAdmin } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -14,6 +13,7 @@ import {
 } from "./actions";
 import { AdminShell } from "./admin-shell";
 import { dangerButton, input, label, labelOnDark, primaryButton } from "./styles";
+import { AdminForm, DeleteButton } from "./toast";
 
 export const metadata: Metadata = {
   title: "Yönetim Paneli",
@@ -43,8 +43,9 @@ async function AdminPanel() {
       <p className="eyebrow text-muted">Menü yönetimi</p>
       <h1 className="heading mt-3 text-5xl font-semibold">Kategoriler ve Ürünler</h1>
 
-      <form
+      <AdminForm
         action={createCategory}
+        successMessage="Eklendi"
         className="mt-10 flex flex-wrap items-end gap-5 bg-white p-5 shadow-sm"
       >
         <ImageField />
@@ -63,12 +64,12 @@ async function AdminPanel() {
         <button type="submit" className={primaryButton}>
           Kategori Ekle
         </button>
-      </form>
+      </AdminForm>
 
       <div className="mt-10 space-y-10">
         {categories.map((category) => (
           <section key={category.id} className="bg-white shadow-sm">
-            <form
+            <AdminForm
               action={updateCategory}
               className="flex flex-wrap items-end gap-5 border-b border-border bg-ink p-5 text-white"
             >
@@ -96,7 +97,7 @@ async function AdminPanel() {
                 <button type="submit" className={primaryButton}>
                   Kaydet
                 </button>
-                <ConfirmButton
+                <DeleteButton
                   formAction={deleteCategory}
                   formNoValidate
                   title="Kategori silinsin mi?"
@@ -104,14 +105,14 @@ async function AdminPanel() {
                   className={`${dangerButton} text-peach hover:bg-white/10`}
                 >
                   Sil
-                </ConfirmButton>
+                </DeleteButton>
               </div>
-            </form>
+            </AdminForm>
 
             <ul className="divide-y divide-border">
               {category.items.map((item) => (
                 <li key={item.id}>
-                  <form action={updateItem} className="flex flex-col gap-5 p-5 sm:flex-row">
+                  <AdminForm action={updateItem} className="flex flex-col gap-5 p-5 sm:flex-row">
                     <input type="hidden" name="id" value={item.id} />
                     <ImageField key={item.imageUrl ?? ""} defaultUrl={item.imageUrl} />
                     <div className="grid flex-1 gap-3 md:grid-cols-[2fr_110px_70px_1fr] md:items-end">
@@ -171,7 +172,7 @@ async function AdminPanel() {
                         <button type="submit" className={primaryButton}>
                           Kaydet
                         </button>
-                        <ConfirmButton
+                        <DeleteButton
                           formAction={deleteItem}
                           formNoValidate
                           title="Ürün silinsin mi?"
@@ -179,16 +180,17 @@ async function AdminPanel() {
                           className={dangerButton}
                         >
                           Sil
-                        </ConfirmButton>
+                        </DeleteButton>
                       </div>
                     </div>
-                  </form>
+                  </AdminForm>
                 </li>
               ))}
             </ul>
 
-            <form
+            <AdminForm
               action={createItem}
+              successMessage="Eklendi"
               className="flex flex-col gap-5 border-t border-dashed border-sand bg-cream/50 p-5 sm:flex-row sm:items-end"
             >
               <input type="hidden" name="categoryId" value={category.id} />
@@ -216,7 +218,7 @@ async function AdminPanel() {
                   Ürün Ekle
                 </button>
               </div>
-            </form>
+            </AdminForm>
           </section>
         ))}
 

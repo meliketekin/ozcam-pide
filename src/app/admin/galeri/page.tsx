@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ConfirmButton } from "@/components/confirm-button";
 import { ImageField } from "@/components/image-field";
 import { requireAdmin } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { createGalleryImage, deleteGalleryImage, updateGalleryImage } from "../actions";
 import { AdminShell } from "../admin-shell";
 import { dangerButton, input, label, primaryButton } from "../styles";
+import { AdminForm, DeleteButton } from "../toast";
 
 export const metadata: Metadata = {
   title: "Galeri | Yönetim Paneli",
@@ -35,8 +35,9 @@ async function GalleryPanel() {
         Fotoğraflar anasayfada dikey (3:4) karelerde gösterilir; en iyi sonuç için dikey fotoğraf yükleyin. Galeri boşsa bölüm sitede görünmez.
       </p>
 
-      <form
+      <AdminForm
         action={createGalleryImage}
+        successMessage="Eklendi"
         className="mt-10 flex flex-wrap items-end gap-5 bg-white p-5 shadow-sm"
       >
         <ImageField size="lg" />
@@ -49,12 +50,12 @@ async function GalleryPanel() {
         <button type="submit" className={primaryButton}>
           Fotoğraf Ekle
         </button>
-      </form>
+      </AdminForm>
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {images.map((image) => (
           <li key={image.id} className="bg-white shadow-sm">
-            <form action={updateGalleryImage} className="flex gap-4 p-4">
+            <AdminForm action={updateGalleryImage} className="flex gap-4 p-4">
               <input type="hidden" name="id" value={image.id} />
               <ImageField key={image.imageUrl} defaultUrl={image.imageUrl} removable={false} />
               <div className="flex min-w-0 flex-1 flex-col gap-3">
@@ -70,7 +71,7 @@ async function GalleryPanel() {
                   <button type="submit" className={primaryButton}>
                     Kaydet
                   </button>
-                  <ConfirmButton
+                  <DeleteButton
                     formAction={deleteGalleryImage}
                     formNoValidate
                     title="Fotoğraf silinsin mi?"
@@ -78,10 +79,10 @@ async function GalleryPanel() {
                     className={dangerButton}
                   >
                     Sil
-                  </ConfirmButton>
+                  </DeleteButton>
                 </div>
               </div>
-            </form>
+            </AdminForm>
           </li>
         ))}
       </ul>
