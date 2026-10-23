@@ -48,3 +48,8 @@ next-env.d.ts
 
 # admin panelinden yüklenen fotoğraflar (yerel)
 /uploads/
+
+# Neon kurulumunun eklediği AI asistanı talimatları (yerel)
+/.agents/
+/.claude/skills/
+/skills-lock.json
