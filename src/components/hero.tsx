@@ -6,7 +6,6 @@ export function Hero({
   title,
   children,
   bottom,
-  credit,
   size = "full",
 }: {
   image: string;
@@ -15,8 +14,6 @@ export function Hero({
   children?: React.ReactNode;
   /** Hero'nun alt kenarına sabitlenen içerik */
   bottom?: React.ReactNode;
-  /** Lisansı atıf isteyen fotoğraflar için sağ alt köşedeki küçük kaynak satırı */
-  credit?: { text: string; href: string };
   size?: "full" | "compact";
 }) {
   return (
@@ -55,16 +52,6 @@ export function Hero({
         </div>
       )}
 
-      {credit && (
-        <a
-          href={credit.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute right-3 bottom-2 z-10 text-[10px] text-white/45 hover:text-white/80"
-        >
-          {credit.text}
-        </a>
-      )}
     </section>
   );
 }

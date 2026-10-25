@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { isVideo } from "@/lib/image-url";
 
 const MAX_SIDE = 1600;
 const MAX_BYTES = 4 * 1024 * 1024;
@@ -119,7 +120,9 @@ export function ImageField({
         }`}
         aria-label={shown ? "Fotoğrafı değiştir" : "Fotoğraf seç"}
       >
-        {shown ? (
+        {shown && isVideo(shown) ? (
+          <video src={shown} muted playsInline preload="metadata" className="size-full object-cover" />
+        ) : shown ? (
           // Önizleme blob: adresi olabilir, next/image ile gösterilemez
           // eslint-disable-next-line @next/next/no-img-element
           <img src={shown} alt="" className="size-full object-cover" />

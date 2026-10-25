@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/hero";
 import { MenuNav } from "@/components/menu-nav";
+import { NoImage } from "@/components/no-image";
 import { Photo } from "@/components/photo";
 import { formatPrice, getPublicMenu } from "@/lib/menu";
 
@@ -53,16 +54,18 @@ async function MenuSections() {
                   key={item.id}
                   className="reveal group flex gap-5 border-b border-border py-6 md:-mx-4 md:px-4 transition-colors duration-300 hover:bg-ink/[0.03]"
                 >
-                  {item.imageUrl && (
-                    <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-ink sm:size-24">
+                  <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-ink sm:size-24">
+                    {item.imageUrl ? (
                       <Photo
                         src={item.imageUrl}
                         alt={item.name}
                         sizes="96px"
                         className="transition-transform duration-700 group-hover:scale-110"
                       />
-                    </div>
-                  )}
+                    ) : (
+                      <NoImage />
+                    )}
+                  </div>
                   <div className="min-w-0 flex-1 self-center">
                     <div className="flex items-baseline gap-3">
                       <h3 className="title-card transition-colors duration-300 group-hover:text-brand">

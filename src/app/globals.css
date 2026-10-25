@@ -174,16 +174,6 @@ body {
       animation-range: exit 0% exit 60%;
     }
 
-    /* Yorum kartları sağdan sırayla gelir. Kartlar yatay kayan listede olduğu için
-       zaman çizelgesi bölümden alınır (view() listenin kendisine bağlanırdı). */
-    .band-scroll {
-      view-timeline-name: --band;
-    }
-    .band-item {
-      animation: slide-in linear both;
-      animation-timeline: --band;
-      animation-range: entry calc(25% + var(--i, 0) * 8%) cover calc(45% + var(--i, 0) * 8%);
-    }
 
     /* Başlıklar görünmez bir çizginin altından yükselir */
     .reveal-title {
@@ -275,6 +265,38 @@ body {
   .spin-slow {
     animation: rotate 24s linear infinite;
   }
+  /* Yorum şeridi: sola doğru sonsuz kayar, üzerine gelince durur (--duration: tur süresi) */
+  .marquee {
+    animation: marquee var(--duration, 40s) linear infinite;
+  }
+  .marquee-wrap:hover .marquee {
+    animation-play-state: paused;
+  }
+  /* Hero'daki aşağı oklar: sırayla belirip aşağı akar (--d: gecikme) */
+  .scroll-arrow {
+    animation: scroll-arrow 1.6s ease-in-out var(--d, 0s) infinite;
+  }
+}
+
+@keyframes marquee {
+  to {
+    translate: -50% 0;
+  }
+}
+
+@keyframes scroll-arrow {
+  0% {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+  40% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    opacity: 0;
+    translate: 0 8px;
+  }
 }
 
 @keyframes clip-reveal {
@@ -341,17 +363,6 @@ body {
   to {
     opacity: 0;
     translate: 0 -120px;
-  }
-}
-
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    translate: 80px 0;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
   }
 }
 

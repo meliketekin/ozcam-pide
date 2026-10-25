@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { Logo } from "@/components/logo";
-import { homeSections, navLinks, site } from "@/lib/site";
+import { PhoneLink } from "@/components/phone-link";
+import { homeSections, navLinks } from "@/lib/site";
 
 type NavLink = (typeof navLinks)[number];
 
@@ -72,67 +73,70 @@ export function SiteHeader() {
   };
 
   return (
-    <header
-      className={`header-in fixed inset-x-0 top-0 z-40 text-cream transition-all duration-500 ${
-        solid && !open ? "bg-ink-deep/95 shadow-lg backdrop-blur" : "bg-transparent"
-      }`}
-    >
-      <div
-        className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-all duration-500 lg:px-14 ${
-          solid ? "h-[72px]" : "h-24"
+    <>
+      <header
+        className={`header-in fixed inset-x-0 top-0 z-40 text-cream transition-all duration-500 ${
+          solid && !open ? "bg-ink-deep/95 shadow-lg backdrop-blur" : "bg-transparent"
         }`}
       >
-        <Logo className="relative z-50" />
-
-        <nav className="hidden md:block">
-          <ul className="flex gap-8">
-            {navLinks.map((link) => {
-              const active = isActive(link);
-              return (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    onClick={(e) => handleClick(e, link)}
-                    aria-current={active ? "page" : undefined}
-                    className={`relative py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-[4px] after:origin-left after:border-y after:border-current after:transition-transform after:duration-300 hover:text-white ${
-                      active ? "text-white after:scale-x-100" : "after:scale-x-0"
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="hidden text-sand hover:text-white lg:block">
-          {site.phone}
-        </a>
-
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          className="relative z-50 flex size-10 flex-col items-center justify-center gap-1.5 md:hidden"
-          aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
-          aria-expanded={open}
+        <div
+          className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-all duration-500 lg:px-14 ${
+            solid ? "h-[72px]" : "h-24"
+          }`}
         >
-          <span className={`h-px w-6 bg-current transition ${open ? "translate-y-[3.5px] rotate-45" : ""}`} />
-          <span className={`h-px w-6 bg-current transition ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`} />
-        </button>
-      </div>
+          <Logo className="relative z-50" />
 
-      {/* Sayfada ne kadar ilerlendiğini gösteren ince çizgi (yalnızca header doluyken) */}
-      <span
-        aria-hidden
-        className={`scroll-progress absolute inset-x-0 bottom-0 h-0.5 bg-brand transition-opacity duration-500 ${
-          solid && !open ? "opacity-100" : "opacity-0"
-        }`}
-      />
+          <nav className="hidden md:block">
+            <ul className="flex gap-8">
+              {navLinks.map((link) => {
+                const active = isActive(link);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      onClick={(e) => handleClick(e, link)}
+                      aria-current={active ? "page" : undefined}
+                      className={`relative py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-[4px] after:origin-left after:border-y after:border-current after:transition-transform after:duration-300 hover:text-white ${
+                        active ? "text-white after:scale-x-100" : "after:scale-x-0"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
 
-      {/* Mobil tam ekran menü */}
+          <PhoneLink className="hidden text-sand hover:text-white lg:flex" />
+
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            className="relative z-50 flex size-10 flex-col items-center justify-center gap-1.5 md:hidden"
+            aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
+            aria-expanded={open}
+          >
+            <span className={`h-px w-6 bg-current transition ${open ? "translate-y-[3.5px] rotate-45" : ""}`} />
+            <span className={`h-px w-6 bg-current transition ${open ? "-translate-y-[3.5px] -rotate-45" : ""}`} />
+          </button>
+        </div>
+
+        {/* Sayfada ne kadar ilerlendiğini gösteren ince çizgi (yalnızca header doluyken) */}
+        <span
+          aria-hidden
+          className={`scroll-progress absolute inset-x-0 bottom-0 h-0.5 bg-brand transition-opacity duration-500 ${
+            solid && !open ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      </header>
+
+      {/* Mobil tam ekran menü. Header'ın dışında: header'daki transform (açılış animasyonu) ve
+          backdrop-blur, içindeki fixed katmanı ekran yerine header'a göre konumlandırıyordu.
+          z-35: kategori çubuğu ve yukarı butonunun (z-30) üstünde, header'ın (z-40) altında:
+          logo ve kapatma butonu menünün üstünde görünür. */}
       <div
-        className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-6 bg-ink-deep transition-opacity duration-500 md:hidden ${
+        className={`fixed inset-0 z-[35] flex flex-col items-center justify-center gap-6 bg-ink-deep text-cream transition-opacity duration-500 md:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
@@ -149,10 +153,8 @@ export function SiteHeader() {
             {link.label}
           </Link>
         ))}
-        <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="mt-6 text-sand">
-          {site.phone}
-        </a>
+        <PhoneLink className="mt-6 flex text-sand" />
       </div>
-    </header>
+    </>
   );
 }

@@ -29,7 +29,6 @@ export async function getFeaturedItems() {
   return db.menuItem.findMany({
     where: { isFeatured: true, isAvailable: true },
     orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
-    take: 3,
   });
 }
 

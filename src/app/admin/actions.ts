@@ -92,14 +92,29 @@ export async function createCategory(formData: FormData) {
 export async function updateCategory(formData: FormData) {
   await requireAdmin();
   const id = readInt(formData, "id");
-  const data = {
-    name: readRequired(formData, "name"),
-    sortOrder: readInt(formData, "sortOrder"),
-  };
+  // Sıra burada değişmez: sürükle-bırak ile reorderCategories kaydeder
+  const data = { name: readRequired(formData, "name") };
   const previous = await db.category.findUniqueOrThrow({ where: { id } });
   const imageUrl = await resolveImage(formData);
   await db.category.update({ where: { id }, data: { ...data, imageUrl } });
   await cleanupImage(previous.imageUrl, imageUrl);
+  updateTag(MENU_TAG);
+}
+
+/** İstemciden gelen sıralama listesi: tekrarsız tam sayılar olmalı. */
+function readIdList(ids: unknown) {
+  if (!Array.isArray(ids) || !ids.every(Number.isInteger) || new Set(ids).size !== ids.length) {
+    throw new Error("Sıralama geçersiz.");
+  }
+  return ids as number[];
+}
+
+/** Sürükle-bırak sonrası kategori sırası: listedeki konum sıra numarası olur (0, 1, 2…, tekrar yok). */
+export async function reorderCategories(ids: number[]) {
+  await requireAdmin();
+  await db.$transaction(
+    readIdList(ids).map((id, sortOrder) => db.category.update({ where: { id }, data: { sortOrder } })),
+  );
   updateTag(MENU_TAG);
 }
 
@@ -147,7 +162,7 @@ export async function updateItem(formData: FormData) {
     name: readRequired(formData, "name"),
     description: readText(formData, "description") || null,
     price: readPrice(formData),
-    sortOrder: readInt(formData, "sortOrder"),
+    // Sıra burada değişmez: sürükle-bırak ile reorderItems kaydeder
     isAvailable: formData.get("isAvailable") === "on",
     isFeatured: formData.get("isFeatured") === "on",
   };
@@ -155,6 +170,26 @@ export async function updateItem(formData: FormData) {
   const imageUrl = await resolveImage(formData);
   await db.menuItem.update({ where: { id }, data: { ...data, imageUrl } });
   await cleanupImage(previous.imageUrl, imageUrl);
+  updateTag(MENU_TAG);
+}
+
+/** Sürükle-bırak sonrası bir kategorideki ürün sırası (başka kategorinin ürünü değiştirilemez). */
+export async function reorderItems(categoryId: number, ids: number[]) {
+  await requireAdmin();
+  await db.$transaction(
+    readIdList(ids).map((id, sortOrder) =>
+      db.menuItem.updateMany({ where: { id, categoryId }, data: { sortOrder } }),
+    ),
+  );
+  updateTag(MENU_TAG);
+}
+
+/** Paneldeki "Satışta" / "Öne çıkan" anahtarları: tıklanınca yalnızca o alan anında kaydedilir. */
+export async function setItemFlag(id: number, flag: "isAvailable" | "isFeatured", value: boolean) {
+  await requireAdmin();
+  // İstemciden gelen değer: yalnızca bu iki alana izin ver
+  if (flag !== "isAvailable" && flag !== "isFeatured") throw new Error("Geçersiz alan.");
+  await db.menuItem.update({ where: { id }, data: { [flag]: value === true } });
   updateTag(MENU_TAG);
 }
 

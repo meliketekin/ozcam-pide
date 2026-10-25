@@ -8,10 +8,15 @@ import {
   createItem,
   deleteCategory,
   deleteItem,
+  reorderCategories,
+  reorderItems,
   updateCategory,
   updateItem,
 } from "./actions";
 import { AdminShell } from "./admin-shell";
+import { CategoryCollapse, CollapseBody, CollapseToggle } from "./category-collapse";
+import { FlagSwitch } from "./flag-switch";
+import { SortableList, SortControls } from "./sortable-list";
 import { dangerButton, input, label, labelOnDark, primaryButton } from "./styles";
 import { AdminForm, DeleteButton } from "./toast";
 
@@ -53,179 +58,166 @@ async function AdminPanel() {
           <label className={label} htmlFor="new-category">
             Yeni kategori
           </label>
-          <input
-            id="new-category"
-            name="name"
-            placeholder="Örn. Çorbalar"
-            required
-            className={input}
-          />
+          <input id="new-category" name="name" placeholder="Örn. Çorbalar" required className={input} />
         </div>
         <button type="submit" className={primaryButton}>
           Kategori Ekle
         </button>
       </AdminForm>
 
-      <div className="mt-10 space-y-10">
-        {categories.map((category) => (
-          <section key={category.id} className="bg-white shadow-sm">
-            <AdminForm
-              action={updateCategory}
-              className="flex flex-wrap items-end gap-5 border-b border-border bg-ink p-5 text-white"
-            >
-              <input type="hidden" name="id" value={category.id} />
-              <ImageField key={category.imageUrl ?? ""} defaultUrl={category.imageUrl} size="lg" />
-              <div className="min-w-48 flex-1">
-                <label className={labelOnDark}>Kategori adı</label>
-                <input
-                  name="name"
-                  defaultValue={category.name}
-                  required
-                  className={`${input} font-display text-xl font-bold text-ink`}
-                />
-              </div>
-              <div className="w-20">
-                <label className={labelOnDark}>Sıra</label>
-                <input
-                  name="sortOrder"
-                  type="number"
-                  defaultValue={category.sortOrder}
-                  className={`${input} text-ink`}
-                />
-              </div>
-              <div className="flex gap-1">
-                <button type="submit" className={primaryButton}>
-                  Kaydet
-                </button>
-                <DeleteButton
-                  formAction={deleteCategory}
-                  formNoValidate
-                  title="Kategori silinsin mi?"
-                  message={`"${category.name}" kategorisi ve içindeki ${category.items.length} ürün kalıcı olarak silinecek.`}
-                  className={`${dangerButton} text-peach hover:bg-white/10`}
-                >
-                  Sil
-                </DeleteButton>
-              </div>
-            </AdminForm>
-
-            <ul className="divide-y divide-border">
-              {category.items.map((item) => (
-                <li key={item.id}>
-                  <AdminForm action={updateItem} className="flex flex-col gap-5 p-5 sm:flex-row">
-                    <input type="hidden" name="id" value={item.id} />
-                    <ImageField key={item.imageUrl ?? ""} defaultUrl={item.imageUrl} />
-                    <div className="grid flex-1 gap-3 md:grid-cols-[2fr_110px_70px_1fr] md:items-end">
-                      <div>
-                        <label className={label}>Ürün</label>
-                        <input name="name" defaultValue={item.name} required className={input} />
-                      </div>
-                      <div>
-                        <label className={label}>Fiyat (₺)</label>
-                        <input
-                          name="price"
-                          inputMode="decimal"
-                          defaultValue={item.price}
-                          required
-                          className={input}
-                        />
-                      </div>
-                      <div>
-                        <label className={label}>Sıra</label>
-                        <input
-                          name="sortOrder"
-                          type="number"
-                          defaultValue={item.sortOrder}
-                          className={input}
-                        />
-                      </div>
-                      <div className="flex items-center gap-4 text-sm md:pb-2">
-                        <label className="flex items-center gap-1.5">
-                          <input
-                            name="isAvailable"
-                            type="checkbox"
-                            defaultChecked={item.isAvailable}
-                            className="size-4 accent-brand"
-                          />
-                          Satışta
-                        </label>
-                        <label className="flex items-center gap-1.5">
-                          <input
-                            name="isFeatured"
-                            type="checkbox"
-                            defaultChecked={item.isFeatured}
-                            className="size-4 accent-brand"
-                          />
-                          Öne çıkan
-                        </label>
-                      </div>
-
-                      <div className="md:col-span-3">
-                        <label className={label}>Açıklama</label>
-                        <input
-                          name="description"
-                          defaultValue={item.description ?? ""}
-                          className={input}
-                        />
-                      </div>
-                      <div className="flex gap-1">
-                        <button type="submit" className={primaryButton}>
-                          Kaydet
-                        </button>
-                        <DeleteButton
-                          formAction={deleteItem}
-                          formNoValidate
-                          title="Ürün silinsin mi?"
-                          message={`"${item.name}" menüden kalıcı olarak silinecek.`}
-                          className={dangerButton}
-                        >
-                          Sil
-                        </DeleteButton>
-                      </div>
-                    </div>
-                  </AdminForm>
-                </li>
-              ))}
-            </ul>
-
-            <AdminForm
-              action={createItem}
-              successMessage="Eklendi"
-              className="flex flex-col gap-5 border-t border-dashed border-sand bg-cream/50 p-5 sm:flex-row sm:items-end"
-            >
-              <input type="hidden" name="categoryId" value={category.id} />
-              <ImageField />
-              <div className="grid flex-1 gap-3 md:grid-cols-[2fr_3fr_110px_auto] md:items-end">
-                <div>
-                  <label className={label}>Yeni ürün</label>
-                  <input name="name" placeholder="Ürün adı" required className={input} />
-                </div>
-                <div>
-                  <label className={label}>Açıklama</label>
-                  <input name="description" placeholder="İsteğe bağlı" className={input} />
-                </div>
-                <div>
-                  <label className={label}>Fiyat (₺)</label>
+      <SortableList
+        onReorder={reorderCategories}
+        className="mt-10 space-y-10"
+        rows={categories.map((category) => ({
+          id: category.id,
+          content: (
+            <CategoryCollapse>
+              <AdminForm
+                action={updateCategory}
+                className="relative flex flex-wrap items-end gap-5 border-b border-border bg-ink p-5 text-white"
+              >
+                <input type="hidden" name="id" value={category.id} />
+                <SortControls dark />
+                <ImageField key={category.imageUrl ?? ""} defaultUrl={category.imageUrl} size="lg" />
+                <div className="min-w-48 flex-1">
+                  <label className={labelOnDark}>Kategori adı</label>
                   <input
-                    name="price"
-                    placeholder="0"
-                    inputMode="decimal"
+                    name="name"
+                    defaultValue={category.name}
                     required
-                    className={input}
+                    className={`${input} font-display text-xl font-bold text-ink`}
                   />
                 </div>
-                <button type="submit" className={primaryButton}>
-                  Ürün Ekle
-                </button>
-              </div>
-            </AdminForm>
-          </section>
-        ))}
+                <div className="flex gap-1">
+                  <button type="submit" className={primaryButton}>
+                    Kaydet
+                  </button>
+                  <DeleteButton
+                    formAction={deleteCategory}
+                    formNoValidate
+                    title="Kategori silinsin mi?"
+                    message={`"${category.name}" kategorisi ve içindeki ${category.items.length} ürün kalıcı olarak silinecek.`}
+                    className={`${dangerButton} text-peach hover:bg-white/10`}
+                  >
+                    Sil
+                  </DeleteButton>
+                </div>
+                <CollapseToggle
+                  count={category.items.length}
+                  className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-sand hover:bg-white/10 hover:text-white"
+                />
+              </AdminForm>
 
-        {categories.length === 0 && (
-          <p className="text-center text-muted">Henüz kategori yok. Yukarıdan ekleyebilirsin.</p>
-        )}
-      </div>
+              <CollapseBody>
+                <SortableList
+                  onReorder={reorderItems.bind(null, category.id)}
+                  className="divide-y divide-border"
+                  itemClassName="bg-white"
+                  rows={category.items.map((item) => ({
+                    id: item.id,
+                    content: (
+                      <div className="flex gap-3 py-5 pr-5 pl-2">
+                        <SortControls />
+                        <AdminForm action={updateItem} className="flex flex-1 flex-col gap-5 sm:flex-row">
+                          <input type="hidden" name="id" value={item.id} />
+                          <ImageField key={item.imageUrl ?? ""} defaultUrl={item.imageUrl} />
+                          <div className="grid flex-1 gap-3 md:grid-cols-[2fr_110px_1fr] md:items-end">
+                            <div>
+                              <label className={label}>Ürün</label>
+                              <input name="name" defaultValue={item.name} required className={input} />
+                            </div>
+                            <div>
+                              <label className={label}>Fiyat (₺)</label>
+                              <input
+                                name="price"
+                                inputMode="decimal"
+                                defaultValue={item.price}
+                                required
+                                className={input}
+                              />
+                            </div>
+                            <div className="flex items-center gap-4 text-sm md:pb-2">
+                              <FlagSwitch
+                                itemId={item.id}
+                                itemName={item.name}
+                                flag="isAvailable"
+                                defaultChecked={item.isAvailable}
+                              >
+                                Satışta
+                              </FlagSwitch>
+                              <FlagSwitch
+                                itemId={item.id}
+                                itemName={item.name}
+                                flag="isFeatured"
+                                defaultChecked={item.isFeatured}
+                              >
+                                Öne çıkan
+                              </FlagSwitch>
+                            </div>
+
+                            <div className="md:col-span-2">
+                              <label className={label}>Açıklama</label>
+                              <input
+                                name="description"
+                                defaultValue={item.description ?? ""}
+                                className={input}
+                              />
+                            </div>
+                            <div className="flex gap-1">
+                              <button type="submit" className={primaryButton}>
+                                Kaydet
+                              </button>
+                              <DeleteButton
+                                formAction={deleteItem}
+                                formNoValidate
+                                title="Ürün silinsin mi?"
+                                message={`"${item.name}" menüden kalıcı olarak silinecek.`}
+                                className={dangerButton}
+                              >
+                                Sil
+                              </DeleteButton>
+                            </div>
+                          </div>
+                        </AdminForm>
+                      </div>
+                    ),
+                  }))}
+                />
+
+                <AdminForm
+                  action={createItem}
+                  successMessage="Eklendi"
+                  className="flex flex-col gap-5 border-t border-dashed border-sand bg-cream/50 p-5 sm:flex-row sm:items-end"
+                >
+                  <input type="hidden" name="categoryId" value={category.id} />
+                  <ImageField />
+                  <div className="grid flex-1 gap-3 md:grid-cols-[2fr_3fr_110px_auto] md:items-end">
+                    <div>
+                      <label className={label}>Yeni ürün</label>
+                      <input name="name" placeholder="Ürün adı" required className={input} />
+                    </div>
+                    <div>
+                      <label className={label}>Açıklama</label>
+                      <input name="description" placeholder="İsteğe bağlı" className={input} />
+                    </div>
+                    <div>
+                      <label className={label}>Fiyat (₺)</label>
+                      <input name="price" placeholder="0" inputMode="decimal" required className={input} />
+                    </div>
+                    <button type="submit" className={primaryButton}>
+                      Ürün Ekle
+                    </button>
+                  </div>
+                </AdminForm>
+              </CollapseBody>
+            </CategoryCollapse>
+          ),
+        }))}
+      />
+
+      {categories.length === 0 && (
+        <p className="mt-10 text-center text-muted">Henüz kategori yok. Yukarıdan ekleyebilirsin.</p>
+      )}
     </>
   );
 }

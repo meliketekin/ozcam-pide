@@ -67,4 +67,4 @@ Admin panelinde her kategori ve ürünün solundaki kutuya tıklayıp fotoğraf 
 
 `kategori-lahmacun.jpg` ve `kategori-tatlilar.jpg` Wikimedia Commons'tan alınmış CC0 (kamu malı) görsellerdir; atıf gerektirmez.
 
-`hero-firin.jpg` (anasayfa hero) Wikimedia Commons'tan, CC BY 2.0 lisanslıdır (William Neuheisel). Lisans gereği hero'nun sağ alt köşesinde atıf satırı gösterilir; fotoğraf değiştirilirse `credit` da kaldırılmalı. Başka bir atıf gerektiren görsel eklenirse aynı şekilde atıf verilmeli.
+`hero-firin.jpg` (anasayfa hero ve admin giriş arka planı) Wikimedia Commons'tan, CC BY 2.0 lisanslıdır (William Neuheisel, [kaynak](https://commons.wikimedia.org/wiki/File:Pide_(6377363891).jpg)). Lisans sitede atıf ister; atıf işletmenin isteğiyle kaldırıldı. Lisansa uymak için ya atıf geri eklenmeli ya da bu görsel işletmenin kendi fotoğrafıyla değiştirilmeli.

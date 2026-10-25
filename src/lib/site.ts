@@ -1,29 +1,23 @@
-// İşletme bilgileri — gerçek bilgilerle güncelle
+// İşletme bilgileri — adres, saatler ve konum işletmenin Google / Restaurant Guru kaydından
 export const site = {
   name: "Özçam Pide",
   slogan: "Taş fırından sofranıza, geleneksel pide ve lahmacun.",
-  address: ["Örnek Mah. Fırın Sok. No: 1", "Kadıköy / İstanbul"],
-  phone: "0 (212) 000 00 00",
-  email: "info@ozcampide.com",
-  hours: ["Her gün 10:00 – 23:00"],
-  mapsUrl: "https://maps.google.com/?q=Özçam+Pide",
-  // Haritada gösterilecek yer; API anahtarı gerekmez. Şimdilik semt merkezi gösteriliyor —
-  // işletme Google Maps'te çıkınca "q=" kısmına adını ya da tam adresini yaz (z = yakınlık).
-  mapsEmbedUrl: "https://www.google.com/maps?q=Kadıköy,+İstanbul&z=15&output=embed",
+  address: ["Yeni Mah. Karatay Cad. No: 39/1", "07090 Kepez / Antalya"],
+  phone: "0 (538) 300 03 20",
+  email: "ozcampide.antalya@gmail.com",
+  hours: ["Salı – Pazar 11:00 – 21:45", "Pazartesi kapalı"],
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=Özçam+Pide+Kebap+Kepez+Antalya",
+  // Haritada gösterilecek yer (restoranın konumu); API anahtarı gerekmez (z = yakınlık)
+  mapsEmbedUrl: "https://www.google.com/maps?q=36.9231735,30.7074714&z=17&output=embed",
   social: {
-    instagram: "https://instagram.com/",
-    facebook: "https://facebook.com/",
-    whatsapp: "https://wa.me/900000000000",
+    instagram: "https://instagram.com/ozcampideantalya",
   },
 };
 
-// Hikâyemiz bölümü — yıl ve şehir işletmenin afişlerinden; isimler ÖRNEKTİR,
-// yayından önce gerçekleriyle değiştir
+// Hikâyemiz bölümü — yıl ve şehir işletmenin afişlerinden
 export const story = {
   foundedYear: 1995,
   city: "Antalya",
-  founder: "Hasan Usta",
-  currentMaster: "Murat Usta",
 };
 
 // `section`: anasayfadaki bölümün id'si ("top" = sayfanın başı)

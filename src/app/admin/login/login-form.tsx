@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { Icon } from "@/components/icon";
 import { login } from "../actions";
 
 export function LoginForm() {
@@ -25,7 +26,8 @@ export function LoginForm() {
         />
       </div>
       {state.error && <p className="text-sm text-brand">{state.error}</p>}
-      <button type="submit" disabled={pending} className="btn-primary w-full disabled:opacity-60">
+      <button type="submit" disabled={pending} className="btn-primary w-full gap-2.5 disabled:opacity-60">
+        <Icon name="login" className="size-5" />
         {pending ? "Giriş yapılıyor…" : "Giriş Yap"}
       </button>
     </form>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { isUnoptimized } from "@/lib/image-url";
+import { isUnoptimized, isVideo } from "@/lib/image-url";
 import { useEffect, useRef, useState } from "react";
 import { Photo } from "@/components/photo";
 
@@ -39,7 +39,12 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
         {images.map((image, i) => (
           <li
             key={image.id}
-            className="reveal stagger aspect-[3/4]"
+            // Mobilde (2 sütun) tek sayıda öğe varsa son öğe ortada dursun (gap-3 = 12px)
+            className={`reveal stagger aspect-[3/4] ${
+              images.length % 2 === 1 && i === images.length - 1
+                ? "max-lg:col-span-2 max-lg:w-[calc(50%-6px)] max-lg:justify-self-center"
+                : ""
+            }`}
             style={{ "--i": i % 3 } as React.CSSProperties}
           >
             <button
@@ -49,12 +54,25 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
               className={`group relative size-full overflow-hidden bg-cream ${i % 3 === 1 ? "lg-parallax" : ""}`}
               aria-label={image.caption ? `Büyüt: ${image.caption}` : "Fotoğrafı büyüt"}
             >
-              <Photo
-                src={image.imageUrl}
-                alt={image.caption ?? ""}
-                sizes="(min-width: 1024px) 33vw, 50vw"
-                className="transition-transform duration-700 group-hover:scale-105"
-              />
+              {isVideo(image.imageUrl) ? (
+                // Sessiz döngü: tarayıcılar yalnızca sessiz videoyu kendiliğinden oynatır
+                <video
+                  src={image.imageUrl}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <Photo
+                  src={image.imageUrl}
+                  alt={image.caption ?? ""}
+                  sizes="(min-width: 1024px) 33vw, 50vw"
+                  className="transition-transform duration-700 group-hover:scale-105"
+                />
+              )}
               <span className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/25" />
               {image.caption && (
                 <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/70 to-transparent p-4 pt-10 text-left text-sm text-white transition-transform duration-500 group-hover:translate-y-0">
@@ -79,14 +97,26 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
             onClick={(event) => event.target === event.currentTarget && dialogRef.current?.close()}
           >
             <figure className="relative h-full w-full">
-              <Image
-                src={current.imageUrl}
-                alt={current.caption ?? ""}
-                fill
-                sizes="100vw"
-                unoptimized={isUnoptimized(current.imageUrl)}
-                className="object-contain"
-              />
+              {isVideo(current.imageUrl) ? (
+                <video
+                  key={current.imageUrl}
+                  src={current.imageUrl}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 size-full object-contain"
+                />
+              ) : (
+                <Image
+                  src={current.imageUrl}
+                  alt={current.caption ?? ""}
+                  fill
+                  sizes="100vw"
+                  unoptimized={isUnoptimized(current.imageUrl)}
+                  className="object-contain"
+                />
+              )}
             </figure>
             <p className="mt-4 min-h-6 text-center text-sm text-sand">
               {current.caption}

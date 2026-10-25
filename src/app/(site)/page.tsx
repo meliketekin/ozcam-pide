@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { Gallery } from "@/components/gallery";
 import { Hero } from "@/components/hero";
+import { Icon } from "@/components/icon";
+import { PhoneLink } from "@/components/phone-link";
+import { NoImage } from "@/components/no-image";
 import { Photo } from "@/components/photo";
 import { getGalleryImages, getPublicReviews } from "@/lib/content";
-import { formatPrice, getFeaturedItems, getPublicMenu } from "@/lib/menu";
+import { getFeaturedItems, getPublicMenu } from "@/lib/menu";
 import { site, story } from "@/lib/site";
 
 export default function HomePage() {
@@ -11,11 +14,6 @@ export default function HomePage() {
     <>
       <Hero
         image="/images/hero-firin.jpg"
-        // CC BY 2.0 lisansı atıf istiyor
-        credit={{
-          text: "Fotoğraf: William Neuheisel, CC BY 2.0",
-          href: "https://commons.wikimedia.org/wiki/File:Pide_(6377363891).jpg",
-        }}
         eyebrow="Taş fırından"
         title={
           <>
@@ -26,19 +24,33 @@ export default function HomePage() {
         }
         bottom={
           <div className="flex flex-col items-center gap-1.5 text-cream/80">
-            <a href="#hakkimizda" aria-label="Aşağı kaydır" className="mb-3 hover:text-white">
-              <svg width="22" height="18" viewBox="0 0 22 18" fill="none" stroke="currentColor">
-                <path d="M1 1h20L11 17z" />
-              </svg>
+            {/* İki ok sırayla aşağı akar (globals.css: .scroll-arrow) */}
+            <a href="#hakkimizda" aria-label="Aşağı kaydır" className="mb-2 flex flex-col items-center hover:text-white">
+              {[0, 1].map((i) => (
+                <svg
+                  key={i}
+                  width="26"
+                  height="14"
+                  viewBox="0 0 26 14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="scroll-arrow -mt-1 first:mt-0"
+                  style={{ "--d": `${i * 0.2}s` } as React.CSSProperties}
+                >
+                  <path d="M2 2l11 10L24 2" />
+                </svg>
+              ))}
             </a>
-            <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="hover:text-white">
-              {site.phone}
-            </a>
+            <PhoneLink className="inline-flex hover:text-white" />
             <p className="hidden sm:block">{site.address.join(", ")}</p>
           </div>
         }
       >
-        <Link href="/menu" className="btn-primary mt-10">
+        <Link href="/menu" className="btn-primary mt-10 gap-2.5">
+          <Icon name="menu" className="size-5" />
           Menüyü İncele
         </Link>
       </Hero>
@@ -110,22 +122,23 @@ function About() {
           <div className="lead reveal mt-8 space-y-5 text-muted">
             <p>
               <span className="text-fill fill-dark">
-                {story.founder}, {story.foundedYear}&apos;te {story.city}&apos;daki ilk dükkânını tek bir
-                taş fırın ve birkaç masayla açtı. Tarif basitti: her sabah yeniden açılan hamur,
-                dükkânda çekilen kıyma ve odun ateşi. Zamanla fırının yanına ocakbaşı da eklendi.
+                {story.foundedYear}&apos;te {story.city}&apos;da tek bir taş fırın ve birkaç masayla
+                açıldık. Tarif basitti: her sabah yeniden açılan hamur, dükkânda çekilen kıyma ve
+                odun ateşi. Zamanla fırının yanına ocakbaşı da eklendi.
               </span>
             </p>
             <p>
               <span className="text-fill fill-dark">
-                Bugün fırının başında {story.currentMaster} var. Hamur hâlâ sabahın erken saatinde
-                elde yoğruluyor, pideler hâlâ siparişle açılıp kürekle fırına veriliyor. Değişen
-                tek şey, sofraya oturanların artık müşterimiz değil komşumuz olması.
+                Bugün hamur hâlâ sabahın erken saatinde elde yoğruluyor, pideler hâlâ siparişle
+                açılıp kürekle fırına veriliyor. Değişen tek şey, sofraya oturanların artık
+                müşterimiz değil komşumuz olması.
               </span>
             </p>
           </div>
 
           <div className="reveal mt-12 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <Link href="/menu" className="btn-primary">
+            <Link href="/menu" className="btn-primary gap-2.5">
+              <Icon name="menu" className="size-5" />
               Menüyü İncele
             </Link>
             <Link href="/#iletisim" className="text-ink underline decoration-brand underline-offset-8 hover:text-brand">
@@ -187,7 +200,8 @@ async function Categories() {
         </ul>
 
         <p className="reveal mt-14 text-center">
-          <Link href="/menu" className="btn-primary">
+          <Link href="/menu" className="btn-primary gap-2.5">
+            <Icon name="menu" className="size-5" />
             Tüm Menü
           </Link>
         </p>
@@ -202,38 +216,75 @@ async function Featured() {
 
   return (
     <section className="px-6 pt-24 pb-28 lg:pt-32">
-      <h2 className="title-section reveal-title mx-auto max-w-4xl text-center text-brand">
-        Mutlaka <em>tadına bakmanız</em> gerekenler
-      </h2>
-
-      <div className="mx-auto mt-16 grid max-w-6xl gap-14 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((item, index) => (
-          <div
-            key={item.id}
-            className="reveal stagger group text-center"
-            style={{ "--i": index } as React.CSSProperties}
-          >
-            <div className="relative mx-auto aspect-square w-full max-w-[280px]">
-              <span
-                className="parallax-up absolute -top-8 -right-8 size-20 rounded-full bg-cream"
-                style={{ "--parallax": "30px" } as React.CSSProperties}
-              />
-              <div className="tilt-in relative size-full overflow-hidden rounded-2xl bg-cream">
-                {item.imageUrl && (
-                  <Photo
-                    src={item.imageUrl}
-                    alt={item.name}
-                    sizes="280px"
-                    className="transition-transform duration-700 group-hover:scale-105"
-                  />
-                )}
-              </div>
-            </div>
-            <h3 className="title-card mt-8">{item.name}</h3>
-            <p className="mt-1 text-brand">Denediniz mi?</p>
-            <p className="lead mt-2 text-stone">{formatPrice(item.price)}</p>
+      <div className="mx-auto max-w-6xl">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="eyebrow reveal text-muted">Şefin önerileri</p>
+            <h2 className="title-section reveal-title mt-4 max-w-2xl">
+              Mutlaka <em className="text-brand">tadına bakmanız</em> gerekenler
+            </h2>
           </div>
-        ))}
+          <Link href="/menu" className="reveal text-brand hover:text-ink">
+            Menünün tamamı →
+          </Link>
+        </div>
+
+        {/* Kompakt yatay kartlar: solda küçük fotoğraf, sağda ad ve açıklama */}
+        <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+          {items.map((item, index) => (
+            // Sırayla belirme gecikmesi satır içindeki sütuna göre: kart çoğalınca sondakiler geç kalmasın
+            <li key={item.id} className="reveal stagger" style={{ "--i": index % 3 } as React.CSSProperties}>
+              <Link
+                href={`/menu#kategori-${item.categoryId}`}
+                className="group relative flex h-full items-center gap-5 overflow-hidden rounded-3xl border border-border bg-cream/60 p-3 pr-5 transition-all duration-500 hover:-translate-y-1 hover:border-transparent hover:bg-white hover:shadow-xl hover:shadow-ink/10"
+              >
+                {/* Arkada soluk, büyük sıra numarası */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-1 -bottom-6 font-display text-[7rem] leading-none font-bold text-ink/[0.04] transition-colors duration-500 group-hover:text-brand/10"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <span className="relative size-24 shrink-0 overflow-hidden rounded-2xl bg-ink sm:size-28">
+                  {item.imageUrl ? (
+                    <Photo
+                      src={item.imageUrl}
+                      alt={item.name}
+                      sizes="112px"
+                      className="transition-transform duration-700 group-hover:scale-110"
+                    />
+                  ) : (
+                    <NoImage />
+                  )}
+                </span>
+
+                <span className="relative min-w-0 flex-1">
+                  <span className="title-card block transition-colors duration-300 group-hover:text-brand">
+                    {item.name}
+                  </span>
+                  {item.description && (
+                    <span className="mt-1 line-clamp-2 block text-sm leading-snug text-muted">{item.description}</span>
+                  )}
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.15em] text-brand">
+                    Menüde gör
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      aria-hidden
+                      className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                    >
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
@@ -265,10 +316,15 @@ async function Reviews() {
     );
   }
 
+  // Şerit geniş ekranı da doldursun diye az yorum varsa liste tekrarlanır (en az 6 kart),
+  // sonra kesintisiz döngü için bu set iki kez art arda dizilir: -%50 kayınca başa sarar
+  const set = Array.from({ length: Math.ceil(6 / reviews.length) }, () => reviews).flat();
+  const track = [...set, ...set];
+
   return (
     <section
       id="yorumlar"
-      className={`band-scroll ${quoteBandClass} py-12 lg:py-16`}
+      className={`${quoteBandClass} py-12 lg:py-16`}
       style={{ backgroundImage: "url(/images/bant-firin.jpg)" }}
     >
       <div className="absolute inset-0 bg-black/65" />
@@ -278,28 +334,28 @@ async function Reviews() {
           Sofradan <em>Kalanlar</em>
         </h2>
 
-        {/* Yorum çoksa yana kaydırılır */}
-        <ul
-          className={`-mx-6 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 [scrollbar-width:thin] lg:gap-5 ${
-            reviews.length < 3 ? "sm:justify-center" : ""
-          }`}
-        >
-          {reviews.map((review, index) => (
-            <li
-              key={review.id}
-              style={{ "--i": Math.min(index, 3) } as React.CSSProperties}
-              className="band-item flex shrink-0 basis-[85%] snap-center flex-col bg-white/[0.07] p-6 backdrop-blur-sm sm:basis-[calc(50%-8px)] lg:basis-[calc((100%-40px)/3)]"
-            >
-              <Stars rating={review.rating} />
-              <blockquote className="mt-3 flex-1 text-base leading-[1.5]">
-                “{review.text}”
-              </blockquote>
-              <p className="mt-4 text-sm font-semibold text-sand">
-                {review.author}
-              </p>
-            </li>
-          ))}
-        </ul>
+        {/* Sola doğru sonsuz kayan şerit; üzerine gelince durur. Hareket azaltılmışsa elle kaydırılır. */}
+        <div className="marquee-wrap -mx-6 mt-8 overflow-x-auto [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] motion-safe:overflow-hidden">
+          <ul className="marquee flex w-max" style={{ "--duration": `${set.length * 7}s` } as React.CSSProperties}>
+            {track.map((review, index) => (
+              <li
+                key={index}
+                // Ekran okuyucu her yorumu bir kez okusun
+                aria-hidden={index >= reviews.length || undefined}
+                // Kartlar arası boşluk padding ile: -%50 tam bir set genişliğine denk gelsin
+                className="flex w-72 shrink-0 pr-4 sm:w-80 lg:w-96 lg:pr-5"
+              >
+                <div className="flex w-full flex-col bg-white/20 p-6 backdrop-blur-sm">
+                  <Stars rating={review.rating} />
+                  <blockquote className="mt-3 flex-1 text-base leading-[1.5]">
+                    “{review.text}”
+                  </blockquote>
+                  <p className="mt-4 text-sm font-semibold text-sand">{review.author}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
@@ -335,8 +391,20 @@ async function GallerySection() {
             href={site.social.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="reveal text-brand hover:text-ink"
+            className="reveal inline-flex items-center gap-2 text-brand hover:text-ink"
           >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              aria-hidden
+              className="size-5 shrink-0"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" />
+            </svg>
             Instagram&apos;da takip edin →
           </a>
         </div>
@@ -352,14 +420,30 @@ function Visit() {
   return (
     <section id="iletisim" className="scroll-mt-20 bg-cream px-6 py-24 lg:py-32">
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-20">
-        <div className="clip-side relative aspect-[4/3] bg-sand/40 shadow-2xl shadow-ink/10">
-          <iframe
-            src={site.mapsEmbedUrl}
-            title={`${site.name} harita konumu`}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="absolute inset-0 size-full border-0"
-          />
+        {/* İnce çerçeve: beyaz paspartu + ince kenar çizgisi */}
+        <div className="clip-side border border-ink/15 bg-white p-2 shadow-2xl shadow-ink/10">
+          <div className="relative aspect-[4/3] bg-sand/40">
+            <iframe
+              src={site.mapsEmbedUrl}
+              title={`${site.name} harita konumu`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="absolute inset-0 size-full border-0"
+            />
+            {/* Sol üstteki bilgi kartı (Google'ın koordinat kutusunu da örter) */}
+            <div className="absolute top-2 left-2 max-w-[calc(100%-1rem)] space-y-1 bg-white px-3 py-2.5 text-xs leading-snug text-muted shadow-lg sm:max-w-56">
+              <p className="font-display text-base font-bold text-ink">{site.name}</p>
+              <p className="hidden sm:block">{site.address.join(", ")}</p>
+              <a
+                href={site.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block pt-0.5 font-bold text-brand hover:text-ink"
+              >
+                Yol tarifi al →
+              </a>
+            </div>
+          </div>
         </div>
         <div>
           <p className="eyebrow reveal text-muted">Bizi ziyaret edin</p>
@@ -372,7 +456,10 @@ function Visit() {
           </p>
           <dl className="mt-8 grid gap-6 sm:grid-cols-2">
             <div className="reveal stagger">
-              <dt className="title-card text-ink">Adres</dt>
+              <dt className="title-card flex items-center gap-2 text-ink">
+                <Icon name="pin" className="size-5 text-brand" />
+                Adres
+              </dt>
               <dd className="mt-3 text-muted">
                 {site.address.map((line) => (
                   <span key={line} className="block">
@@ -382,20 +469,22 @@ function Visit() {
               </dd>
             </div>
             <div className="reveal stagger" style={{ "--i": 1 } as React.CSSProperties}>
-              <dt className="title-card text-ink">Saatler</dt>
+              <dt className="title-card flex items-center gap-2 text-ink">
+                <Icon name="clock" className="size-5 text-brand" />
+                Saatler
+              </dt>
               <dd className="mt-3 text-muted">
                 {site.hours.map((line) => (
                   <span key={line} className="block">
                     {line}
                   </span>
                 ))}
-                <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="mt-1 block hover:text-brand">
-                  {site.phone}
-                </a>
+                <PhoneLink className="mt-1 flex hover:text-brand" />
               </dd>
             </div>
           </dl>
-          <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn-primary reveal mt-10">
+          <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn-primary reveal mt-10 gap-2.5">
+            <Icon name="directions" className="size-5" />
             Yol Tarifi Al
           </a>
         </div>

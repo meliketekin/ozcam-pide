@@ -1,5 +1,6 @@
 import { cacheLife } from "next/cache";
 import { Logo } from "@/components/logo";
+import { PhoneLink } from "@/components/phone-link";
 import { SocialIcons } from "@/components/social-icons";
 import { site } from "@/lib/site";
 
@@ -41,9 +42,7 @@ export function SiteFooter() {
             <p key={line}>{line}</p>
           ))}
           <p className="pt-4">
-            <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="hover:text-white">
-              {site.phone}
-            </a>
+            <PhoneLink className="inline-flex hover:text-white" />
           </p>
         </Column>
         <Column title="Sosyal Medya" index={3}>
@@ -51,10 +50,18 @@ export function SiteFooter() {
         </Column>
       </div>
 
-      <div className="mx-auto max-w-6xl border-t border-white/10 px-6 py-8 text-sand">
+      <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-x-6 gap-y-2 border-t border-white/10 px-6 py-8 text-sand">
         <p>
           {site.name} © <CurrentYear />. Tüm hakları saklıdır.
         </p>
+        <a
+          href="https://instagram.com/tmgdigitall"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-white"
+        >
+          TMG Digital Agency
+        </a>
       </div>
     </footer>
   );

@@ -5,3 +5,8 @@ const BLOB_HOST = /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\//;
 export function isUnoptimized(src: string) {
   return src.startsWith("http") && !BLOB_HOST.test(src);
 }
+
+/** Galeride fotoğraf yerine video (ör. /images/konum.mp4) gösterilecek mi? */
+export function isVideo(src: string) {
+  return /\.(mp4|webm)$/i.test(src);
+}
