@@ -32,6 +32,15 @@ Veritabanı şeması değişince `npm run db:migrate` ile yeni migration oluştu
 | `BLOB_READ_WRITE_TOKEN` | Vercel → `.env.local`      | Fotoğraf yükleme                             |
 | `ADMIN_PASSWORD`        | Vercel + yerelde `.env`    | `/admin` giriş şifresi                       |
 | `SESSION_SECRET`        | Vercel + yerelde `.env`    | Oturum çerezini imzalayan gizli anahtar      |
+| `NEXT_PUBLIC_SITE_URL`  | Vercel (Production)        | Sitenin kalıcı adresi, ör. `https://ozcampide.com` (canonical, sitemap, paylaşım görselleri). Tanımlı değilse Vercel'in üretim alan adı kullanılır |
+| `GOOGLE_SITE_VERIFICATION` | Vercel (isteğe bağlı)   | Google Search Console doğrulama kodu (HTML etiketi yöntemindeki `content` değeri) |
+
+## SEO
+
+- `src/app/sitemap.ts`, `robots.ts`, `manifest.ts`: `/sitemap.xml`, `/robots.txt` (admin kapalı), `/manifest.webmanifest`
+- `src/lib/structured-data.ts`: Restaurant (adres, konum, saatler) ve Menü (ürün + fiyat) yapılandırılmış verisi; menü panelden değişince otomatik güncellenir
+- `opengraph-image.jpg` dosyaları: WhatsApp / Instagram / Facebook paylaşım önizlemeleri
+- Başlık ve açıklamalar `src/lib/site.ts` (`seoTitle`, `description`) ve `src/app/(site)/menu/page.tsx` içinde; adres veya saatler değişirse `site.schema` da güncellenmeli
 
 ## Yapı
 

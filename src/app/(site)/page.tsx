@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Gallery } from "@/components/gallery";
 import { Hero } from "@/components/hero";
@@ -9,6 +10,10 @@ import { getGalleryImages, getPublicReviews } from "@/lib/content";
 import { getFeaturedItems, getPublicMenu } from "@/lib/menu";
 import { site, story } from "@/lib/site";
 
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
 export default function HomePage() {
   return (
     <>
@@ -17,6 +22,8 @@ export default function HomePage() {
         eyebrow="Taş fırından"
         title={
           <>
+            {/* Arama motorları için sayfanın ana başlığında işletme adı ve konumu da geçsin */}
+            <span className="sr-only">{site.name} — Kepez, Antalya: </span>
             Değişmeyen Tarif,
             <br />
             <em>Sıcacık</em> Lezzet

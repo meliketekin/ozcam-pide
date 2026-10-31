@@ -1,18 +1,50 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/hero";
+import { JsonLd } from "@/components/json-ld";
 import { MenuNav } from "@/components/menu-nav";
 import { NoImage } from "@/components/no-image";
 import { Photo } from "@/components/photo";
 import { formatPrice, getPublicMenu } from "@/lib/menu";
+import { site } from "@/lib/site";
+import { menuJsonLd } from "@/lib/structured-data";
+
+const title = "Menü ve Fiyatlar — Pide, Lahmacun, Kebap";
+const description =
+  "Özçam Pide menüsü ve güncel fiyatlar: taş fırında pide çeşitleri, lahmacun, dürüm, künefe ve daha fazlası. Kepez / Antalya.";
 
 export const metadata: Metadata = {
-  title: "Menü",
+  title,
+  description,
+  alternates: { canonical: "/menu" },
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    siteName: site.name,
+    title: `${title} | ${site.name}`,
+    description,
+    url: "/menu",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${title} | ${site.name}`,
+    description,
+  },
 };
 
 export default function MenuPage() {
   return (
     <>
-      <Hero image="/images/menu-kebap.jpg" eyebrow="Soframızdan" title="Menümüz" size="compact">
+      <Hero
+        image="/images/menu-kebap.jpg"
+        eyebrow="Soframızdan"
+        title={
+          <>
+            <span className="sr-only">{site.name} </span>
+            Menümüz
+          </>
+        }
+        size="compact"
+      >
         <p className="lead mx-auto mt-6 max-w-xl text-cream/80">
           Taş fırından sofranıza; her gün taze hazırlanan lezzetler.
         </p>
@@ -31,6 +63,7 @@ async function MenuSections() {
 
   return (
     <>
+      <JsonLd data={menuJsonLd(categories)} />
       <MenuNav categories={categories.map(({ id, name }) => ({ id, name }))} />
 
       {categories.map((category, index) => (
