@@ -20,7 +20,7 @@ export const site = {
   slogan: "Taş fırından sofranıza, geleneksel pide ve lahmacun.",
   address: ["Yeni Mah. Karatay Cad. No: 39/1", "07090 Kepez / Antalya"],
   phone: "0 (538) 300 03 20",
-  email: "ozcampide.antalya@gmail.com",
+  email: "ozcamrestaurant@hotmail.com",
   hours: ["Salı – Pazar 11:00 – 21:45", "Pazartesi kapalı"],
   mapsUrl: "https://www.google.com/maps/search/?api=1&query=Özçam+Pide+Kebap+Kepez+Antalya",
   // Haritada gösterilecek yer (restoranın konumu); API anahtarı gerekmez (z = yakınlık)
